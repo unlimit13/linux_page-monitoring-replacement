@@ -1,0 +1,1 @@
+obj-y += monitor_func.o

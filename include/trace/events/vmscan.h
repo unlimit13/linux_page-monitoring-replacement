@@ -458,3 +458,5 @@ DEFINE_EVENT(mm_vmscan_direct_reclaim_end_template, mm_vmscan_node_reclaim_end,
 
 /* This part must be outside protection */
 #include <trace/define_trace.h>
+extern unsigned long lruvec_lru_size(struct lruvec *lruvec, enum lru_list lru,
+				     int zone_idx);

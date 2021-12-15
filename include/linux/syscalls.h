@@ -1276,6 +1276,8 @@ asmlinkage long sys_my_syscall(void);
 
 asmlinkage long sys_prime_syscall(int Maxsize, int* numarr);
 
+asmlinkage long sys_monitor_syscall(void);
+
 #endif /* CONFIG_ARCH_HAS_SYSCALL_WRAPPER */
 
 
