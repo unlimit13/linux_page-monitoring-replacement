@@ -16,13 +16,37 @@
 #include <linux/swap.h>
 
 
+/*int num_of_list(struct list_head *src,int *ref_count){
+	int page_count = 0; 
+	int temp_count = 0;
+	struct page *p = NULL;   
 
-void show_pfn(struct list_head *src){
+	//struct list_head *i, *tmp;
+	//list_for_each_safe(i, tmp, src) {
+	//	page_count++;
+	//}
+	while (!list_empty(src)) {  
+		p = lru_to_page(src); 
+		page_count++;
+		if(PageReferenced(p)){
+			temp_count++;
+		}
+		p = prev_page(p); 
+	}
+	ref_count = &temp_count;
+	return page_count;
+}*/
+
+int show_pfn(struct list_head *src){
   int page_count=0;
+  int reference_cnt=0;
   struct page *p = NULL;
 	struct list_head *i, *n;
 	list_for_each_safe(i, n, src) {
 		p = list_entry(i, struct page, lru);
+    if(PageReferenced(p)){
+      reference_cnt++;
+    }
 		page_count++;
 	}
 
@@ -33,6 +57,7 @@ void show_pfn(struct list_head *src){
     p= list_entry(p->lru,struct page, lru);
   }*/
   printk(KERN_INFO "num : %d\n",page_count);
+  return reference_cnt;
 }
 
 SYSCALL_DEFINE0(monitor_syscall)
@@ -42,7 +67,7 @@ SYSCALL_DEFINE0(monitor_syscall)
   struct lruvec *lruvec;
   struct mem_cgroup *memcg = NULL;
   int i;
-
+  int ref;
   for(i=0;i<MAX_NUMNODES;i++){
     if(NODE_DATA(i)==NULL) continue;
 
@@ -60,24 +85,28 @@ SYSCALL_DEFINE0(monitor_syscall)
     
     spin_lock_irq(&lruvec->lru_lock);
     printk("========== LRU_ACTIVE_FILE ============\n"); 
-    show_pfn(&lruvec->lists[LRU_ACTIVE_FILE]); 
+    ref=show_pfn(&lruvec->lists[LRU_ACTIVE_FILE]); 
     lru = LRU_ACTIVE_FILE;
-    printk(KERN_INFO "%ld\n",lruvec_lru_size(lruvec,lru,MAX_NR_ZONES));
+    printk(KERN_INFO "num for api : %ld\n",lruvec_lru_size(lruvec,lru,MAX_NR_ZONES));
+    printk(KERN_INFO "reference : %d\n",ref);
 
     printk("========== LRU_INACTIVE_FILE ============\n"); 
-    show_pfn(&lruvec->lists[LRU_INACTIVE_FILE]); 
+    ref=show_pfn(&lruvec->lists[LRU_INACTIVE_FILE]); 
     lru = LRU_INACTIVE_FILE;
-    printk(KERN_INFO "%ld\n",lruvec_lru_size(lruvec,lru,MAX_NR_ZONES));
+    printk(KERN_INFO "num for api : %ld\n",lruvec_lru_size(lruvec,lru,MAX_NR_ZONES));
+    printk(KERN_INFO "reference : %d\n",ref);
 
     printk("========== LRU_ACTIVE_ANON ============\n"); 
-    show_pfn(&lruvec->lists[LRU_ACTIVE_ANON]); 
+    ref=show_pfn(&lruvec->lists[LRU_ACTIVE_ANON]); 
     lru = LRU_ACTIVE_ANON;
-    printk(KERN_INFO "%ld\n",lruvec_lru_size(lruvec,lru,MAX_NR_ZONES));
+    printk(KERN_INFO "num for api : %ld\n",lruvec_lru_size(lruvec,lru,MAX_NR_ZONES));
+    printk(KERN_INFO "reference : %d\n",ref);
 
     printk("========== LRU_INACTIVE_ANON ============\n"); 
-    show_pfn(&lruvec->lists[LRU_INACTIVE_ANON]); 
+    ref=show_pfn(&lruvec->lists[LRU_INACTIVE_ANON]); 
     lru = LRU_INACTIVE_ANON;
-    printk(KERN_INFO "%ld\n",lruvec_lru_size(lruvec,lru,MAX_NR_ZONES));
+    printk(KERN_INFO "num for api : %ld\n",lruvec_lru_size(lruvec,lru,MAX_NR_ZONES));
+    printk(KERN_INFO "reference : %d\n",ref);
 
     spin_unlock_irq(&lruvec->lru_lock);
   }
