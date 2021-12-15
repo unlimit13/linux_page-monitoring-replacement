@@ -422,14 +422,14 @@ void mark_page_accessed(struct page *page)
 		 */
 		if (PageLRU(page)){
 			/*monitoring : activation in file and anon*/
-			if(page->mapping->host){ //file
+			/*if(page_lru(page) == LRU_INACTIVE_FILE){ //file
 				inact_to_act_file++;
 			}
-			else{//anon
+			else if(page_lru(page)==LRU_INACTIVE_ANON){//anon
 				inact_to_act_anon++;
-			}
-			//inact_to_act_anon++;
-			//inact_to_act_file++;
+			}*/
+			inact_to_act_anon++;
+			inact_to_act_file++;
 			activate_page(page);
 
 		}
