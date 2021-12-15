@@ -2232,6 +2232,7 @@ static int current_may_throttle(void)
  * shrink_inactive_list() is a helper for shrink_node().  It returns the number
  * of reclaimed pages
  */
+int num_rec_pages=0;
 static unsigned long
 shrink_inactive_list(unsigned long nr_to_scan, struct lruvec *lruvec,
 		     struct scan_control *sc, enum lru_list lru)
@@ -2320,6 +2321,7 @@ shrink_inactive_list(unsigned long nr_to_scan, struct lruvec *lruvec,
 
 	trace_mm_vmscan_lru_shrink_inactive(pgdat->node_id,
 			nr_scanned, nr_reclaimed, &stat, sc->priority, file);
+	num_rec_pages+=nr_reclaimed;
 	return nr_reclaimed;
 }
 
@@ -2340,11 +2342,15 @@ shrink_inactive_list(unsigned long nr_to_scan, struct lruvec *lruvec,
  * The downside is that we have to touch page->_refcount against each page.
  * But we had to alter page->flags anyway.
  */
+int act_to_inact_file=0;
+int act_to_inact_anon=0;
+
 static void shrink_active_list(unsigned long nr_to_scan,
 			       struct lruvec *lruvec,
 			       struct scan_control *sc,
 			       enum lru_list lru)
 {
+	//printk(KERN_INFO "Invoked!\n");
 	unsigned long nr_taken;
 	unsigned long nr_scanned;
 	unsigned long vm_flags;
@@ -2412,7 +2418,17 @@ static void shrink_active_list(unsigned long nr_to_scan,
 		SetPageWorkingset(page);
 		list_add(&page->lru, &l_inactive);
 	}
-
+	/*
+	*----------- For monitoring------------
+	*/
+	spin_lock_irq(&lruvec->lru_lock);
+	if(lru==LRU_ACTIVE_FILE){
+		act_to_inact_file++;
+	}
+	else if(lru==LRU_ACTIVE_ANON){
+		act_to_inact_anon++;
+	}
+	spin_unlock_irq(&lruvec->lru_lock);
 	/*
 	 * Move pages back to the lru list.
 	 */

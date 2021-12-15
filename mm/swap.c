@@ -399,6 +399,8 @@ static void __lru_cache_activate_page(struct page *page)
  * When a newly allocated page is not yet visible, so safe for non-atomic ops,
  * __SetPageReferenced(page) may be substituted for mark_page_accessed(page).
  */
+int inact_to_act_file=0;
+int inact_to_act_anon=0;
 void mark_page_accessed(struct page *page)
 {
 	page = compound_head(page);
@@ -418,8 +420,19 @@ void mark_page_accessed(struct page *page)
 		 * pagevec, mark it active and it'll be moved to the active
 		 * LRU on the next drain.
 		 */
-		if (PageLRU(page))
+		if (PageLRU(page)){
+			/*monitoring : activation in file and anon*/
+			if(page->mapping->host){ //file
+				inact_to_act_file++;
+			}
+			else{//anon
+				inact_to_act_anon++;
+			}
+			//inact_to_act_anon++;
+			//inact_to_act_file++;
 			activate_page(page);
+
+		}
 		else
 			__lru_cache_activate_page(page);
 		ClearPageReferenced(page);

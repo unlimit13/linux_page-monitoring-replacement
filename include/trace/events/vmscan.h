@@ -460,3 +460,6 @@ DEFINE_EVENT(mm_vmscan_direct_reclaim_end_template, mm_vmscan_node_reclaim_end,
 #include <trace/define_trace.h>
 extern unsigned long lruvec_lru_size(struct lruvec *lruvec, enum lru_list lru,
 				     int zone_idx);
+extern int act_to_inact_file;
+extern int act_to_inact_anon;
+extern int num_rec_pages;

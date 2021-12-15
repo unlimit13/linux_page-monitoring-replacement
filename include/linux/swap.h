@@ -38,7 +38,8 @@ static inline int current_is_kswapd(void)
 {
 	return current->flags & PF_KSWAPD;
 }
-
+extern int inact_to_act_file;
+extern int inact_to_act_anon;
 /*
  * MAX_SWAPFILES defines the maximum number of swaptypes: things which can
  * be swapped to.  The swap type and the offset into that swap type are

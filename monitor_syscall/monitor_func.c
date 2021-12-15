@@ -108,6 +108,15 @@ SYSCALL_DEFINE0(monitor_syscall)
     printk(KERN_INFO "num for api : %ld\n",lruvec_lru_size(lruvec,lru,MAX_NR_ZONES));
     printk(KERN_INFO "reference : %d\n",ref);
 
+    printk("========== PROMOTION & DEMOTION ============\n");
+    printk(KERN_INFO "demotion in FILE : %d\n",act_to_inact_file);
+    printk(KERN_INFO "demotion in ANON : %d\n",act_to_inact_anon);
+    printk(KERN_INFO "promotion in FILE : %d\n",inact_to_act_file);
+    printk(KERN_INFO "promotion in ANON : %d\n",inact_to_act_anon);
+
+    printk("========== Reclaimed ============\n");
+    printk(KERN_INFO "Reclaim : %d\n",num_rec_pages);
+
     spin_unlock_irq(&lruvec->lru_lock);
   }
   return 1;
