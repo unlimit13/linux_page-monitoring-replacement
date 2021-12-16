@@ -8,7 +8,7 @@
  *  to bring the system back to freepages.high: 2.4.97, Rik van Riel.
  *  Zone aware kswapd started 02/00, Kanoj Sarcar (kanoj@sgi.com).
  *  Multiqueue VM started 5.8.00, Rik van Riel.
- */
+ */ 
 
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
