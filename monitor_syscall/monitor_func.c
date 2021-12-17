@@ -38,7 +38,7 @@
 	return page_count;
 }*/
 
-int show_pfn(struct list_head *src){
+int do_monitoring(struct list_head *src){
   int page_count=0;
   int reference_cnt=0;
   struct page *p = NULL;
@@ -47,11 +47,6 @@ int show_pfn(struct list_head *src){
 		p = list_entry(i, struct page, lru);
     if(PageReferenced(p)){
       reference_cnt++;
-      atomic_inc(&p->ref_counter);
-      ClearPageReferenced(p);
-    }
-    else{
-      atomic_dec(&p->ref_counter);
     }
 		page_count++;
 	}
@@ -76,7 +71,6 @@ SYSCALL_DEFINE0(monitor_syscall)
   int ref;
   for(i=0;i<MAX_NUMNODES;i++){
     if(NODE_DATA(i)==NULL) continue;
-
     current_pglist = NODE_DATA(i);
 
     if(current_pglist->node_present_pages==0){
@@ -91,25 +85,25 @@ SYSCALL_DEFINE0(monitor_syscall)
     
     spin_lock_irq(&lruvec->lru_lock);
     printk("========== LRU_ACTIVE_FILE ============\n"); 
-    ref=show_pfn(&lruvec->lists[LRU_ACTIVE_FILE]); 
+    ref=do_monitoring(&lruvec->lists[LRU_ACTIVE_FILE]); 
     lru = LRU_ACTIVE_FILE;
     printk(KERN_INFO "num for api : %ld\n",lruvec_lru_size(lruvec,lru,MAX_NR_ZONES));
     printk(KERN_INFO "reference : %d\n",ref);
 
     printk("========== LRU_INACTIVE_FILE ============\n"); 
-    ref=show_pfn(&lruvec->lists[LRU_INACTIVE_FILE]); 
+    ref=do_monitoring(&lruvec->lists[LRU_INACTIVE_FILE]); 
     lru = LRU_INACTIVE_FILE;
     printk(KERN_INFO "num for api : %ld\n",lruvec_lru_size(lruvec,lru,MAX_NR_ZONES));
     printk(KERN_INFO "reference : %d\n",ref);
 
     printk("========== LRU_ACTIVE_ANON ============\n"); 
-    ref=show_pfn(&lruvec->lists[LRU_ACTIVE_ANON]); 
+    ref=do_monitoring(&lruvec->lists[LRU_ACTIVE_ANON]); 
     lru = LRU_ACTIVE_ANON;
     printk(KERN_INFO "num for api : %ld\n",lruvec_lru_size(lruvec,lru,MAX_NR_ZONES));
     printk(KERN_INFO "reference : %d\n",ref);
 
     printk("========== LRU_INACTIVE_ANON ============\n"); 
-    ref=show_pfn(&lruvec->lists[LRU_INACTIVE_ANON]); 
+    ref=do_monitoring(&lruvec->lists[LRU_INACTIVE_ANON]); 
     lru = LRU_INACTIVE_ANON;
     printk(KERN_INFO "num for api : %ld\n",lruvec_lru_size(lruvec,lru,MAX_NR_ZONES));
     printk(KERN_INFO "reference : %d\n",ref);
