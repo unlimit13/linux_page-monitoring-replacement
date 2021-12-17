@@ -39,7 +39,6 @@
 }*/
 
 int do_monitoring(struct list_head *src){
-  int page_count=0;
   int reference_cnt=0;
   struct page *p = NULL;
 	struct list_head *i, *n;
@@ -48,16 +47,13 @@ int do_monitoring(struct list_head *src){
     if(PageReferenced(p)){
       reference_cnt++;
     }
-		page_count++;
 	}
-
   /*while(!list_empty(src)){
     if(++page_count >=20) break;
     p= lru_to_page(src);
     printk(KERN_CONT "(%lx) ",page_to_pfn(p));
     p= list_entry(p->lru,struct page, lru);
   }*/
-  printk(KERN_INFO "num : %d\n",page_count);
   return reference_cnt;
 }
 

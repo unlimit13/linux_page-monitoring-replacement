@@ -1241,10 +1241,10 @@ static enum page_references page_check_references(struct page *page,
 	 * Mlock lost the isolation race with us.  Let try_to_unmap()
 	 * move the page to the unevictable list.
 	 */
-	if (vm_flags & VM_LOCKED)
-		return PAGEREF_RECLAIM;
+	/*if (vm_flags & VM_LOCKED)
+		return PAGEREF_RECLAIM;*/
 
-	if (referenced_ptes) {
+	if (page->ref_counter.counter>0) {
 		/*
 		 * All mapped pages start out with page table
 		 * references from the instantiating fault, so we need
@@ -2322,7 +2322,7 @@ shrink_inactive_list(unsigned long nr_to_scan, struct lruvec *lruvec,
 	trace_mm_vmscan_lru_shrink_inactive(pgdat->node_id,
 			nr_scanned, nr_reclaimed, &stat, sc->priority, file);
 			
-	//num_rec_pages+=nr_reclaimed;
+	num_rec_pages+=nr_reclaimed;
 	return nr_reclaimed;
 }
 
@@ -2397,8 +2397,8 @@ static void shrink_active_list(unsigned long nr_to_scan,
 			}
 		}
 
-		if (page_referenced(page, 0, sc->target_mem_cgroup,
-				    &vm_flags)) {
+		//if (page_referenced(page, 0, sc->target_mem_cgroup,
+		//		    &vm_flags)) {
 			/*
 			 * Identify referenced, file-backed active pages and
 			 * give them one more trip around the active list. So
@@ -2408,12 +2408,12 @@ static void shrink_active_list(unsigned long nr_to_scan,
 			 * IO, plus JVM can create lots of anon VM_EXEC pages,
 			 * so we ignore them here.
 			 */
-			if ((vm_flags & VM_EXEC) && page_is_file_lru(page)) {
+			if (page->ref_counter.counter>0 && page_is_file_lru(page)) {
 				nr_rotated += thp_nr_pages(page);
 				list_add(&page->lru, &l_active);
 				continue;
 			}
-		}
+		//}
 
 		ClearPageActive(page);	/* we are de-activating */
 		SetPageWorkingset(page);
@@ -3650,7 +3650,7 @@ unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
 
 	trace_mm_vmscan_direct_reclaim_end(nr_reclaimed);
 	set_task_reclaim_state(current, NULL);
-	num_rec_pages += nr_reclaimed;
+	//num_rec_pages += nr_reclaimed;
 	return nr_reclaimed;
 }
 
