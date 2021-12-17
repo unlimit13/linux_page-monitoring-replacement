@@ -3,7 +3,7 @@
 #include <unistd.h>
 
 int main(void) {
-	int n = 10000;
+	int n = 11000;
 
 	int** arr_d = (int**)malloc(sizeof(int*)*n);
 	for(int i=0;i<n;i++){
