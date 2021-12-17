@@ -76,6 +76,7 @@ struct page {
 	 * means the other users of this union MUST NOT use the bit to
 	 * avoid collision and false-positive PageTail().
 	 */
+	//unsigned long ref_counter;
 	union {
 		struct {	/* Page cache and anonymous pages */
 			/**
@@ -237,6 +238,7 @@ struct page {
 #ifdef LAST_CPUPID_NOT_IN_PAGE_FLAGS
 	int _last_cpupid;
 #endif
+	atomic_t ref_counter;
 } _struct_page_alignment;
 
 static inline atomic_t *compound_mapcount_ptr(struct page *page)

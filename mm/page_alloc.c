@@ -5401,7 +5401,7 @@ out:
 	}
 
 	trace_mm_page_alloc(page, order, alloc_gfp, ac.migratetype);
-
+	atomic_set(&page->ref_counter, 0);
 	return page;
 }
 EXPORT_SYMBOL(__alloc_pages);

@@ -2321,7 +2321,8 @@ shrink_inactive_list(unsigned long nr_to_scan, struct lruvec *lruvec,
 
 	trace_mm_vmscan_lru_shrink_inactive(pgdat->node_id,
 			nr_scanned, nr_reclaimed, &stat, sc->priority, file);
-	num_rec_pages+=nr_reclaimed;
+			
+	//num_rec_pages+=nr_reclaimed;
 	return nr_reclaimed;
 }
 
@@ -3649,7 +3650,7 @@ unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
 
 	trace_mm_vmscan_direct_reclaim_end(nr_reclaimed);
 	set_task_reclaim_state(current, NULL);
-
+	num_rec_pages += nr_reclaimed;
 	return nr_reclaimed;
 }
 

@@ -10,6 +10,7 @@
 #include <linux/export.h>
 #include <linux/mm.h>
 #include <linux/list.h>
+#include <linux/types.h>
 #include <trace/events/vmscan.h>
 #include <linux/mmzone.h>
 #include <linux/memcontrol.h>
@@ -46,6 +47,11 @@ int show_pfn(struct list_head *src){
 		p = list_entry(i, struct page, lru);
     if(PageReferenced(p)){
       reference_cnt++;
+      atomic_inc(&p->ref_counter);
+      ClearPageReferenced(p);
+    }
+    else{
+      atomic_dec(&p->ref_counter);
     }
 		page_count++;
 	}
@@ -118,6 +124,8 @@ SYSCALL_DEFINE0(monitor_syscall)
     printk(KERN_INFO "Reclaim : %d\n",num_rec_pages);
 
     spin_unlock_irq(&lruvec->lru_lock);
+
+
   }
   return 1;
 }
