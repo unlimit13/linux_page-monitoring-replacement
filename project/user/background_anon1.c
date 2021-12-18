@@ -3,27 +3,46 @@
 #include <unistd.h>
 #include <x86intrin.h>
 #include <immintrin.h>
+#include "backheader.h"
+
+#define ANON_1 7200
+
 
 int main(void) {
-	int start, end;
+	long long start, end;
 
 
-	int n = 8000;
+	int n = ANON_1;
 
 	start = __rdtsc();
-	int** arr_d = (int**)malloc(sizeof(int*)*n);
+	int** arr_1 = (int**)malloc(sizeof(int*)*n);
 	for(int i=0;i<n;i++){
-		arr_d[i] = (int*)malloc(sizeof(int)*n);
+		arr_1[i] = (int*)malloc(sizeof(int)*n);
 	}
 	for(int j=0;j<n;j++){
 		for(int k=0; k<n;k++){
-			arr_d[j][k]=k;
+			arr_1[j][k]=k;
 		}
 	}
 	end = __rdtsc();
-	printf("alloc time : %d\n",end-start);
+	printf("alloc time : %ld\n",end-start);
 
-	while(1);
+	int k=0;
+	int times==5;
+	while(times--){
+		if(k==0){
+			k=1;
+			for(int i=0;i<ANON_1;i++){
+				arr_1[i]++;
+			}
+		}
+		else{
+			k=0;
+			for(int i=0;i<ANON_1;i++){
+				arr_1[i]--;
+			}
+		}
+	}
 
 
 	return 0;

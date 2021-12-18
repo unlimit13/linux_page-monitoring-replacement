@@ -8,39 +8,30 @@
 #include <string.h>
 #include <x86intrin.h>
 #include <immintrin.h>
-#define NUM 11000000
 
 int main(void) {
-	int start, end;
+	long long start, end;
 
-
-	int n=NUM;
-	int a=NUM;
-	char* arr;
-
-	char *file;
+	char *file2;
 	struct stat st;
 	int fd;
 	char temp;
-	FILE* fd1;
-	//FILE *output_file = fopen("output.txt","w+");
-	//FILE *input_file = fopen("input.txt","r");
 
+
+	start = __rdtsc();
 	fd = open("input2.txt",O_RDWR);
-	//fd = fopen("input.txt","r");
 	fstat(fd,&st);
-	file = mmap(NULL,st.st_size, PROT_READ|PROT_WRITE,MAP_SHARED,fd,(off_t)0);
-	if(file == MAP_FAILED) { perror("mmap"); exit(1); } 
+	file2 = mmap(NULL,st.st_size, PROT_READ|PROT_WRITE,MAP_SHARED,fd,(off_t)0);
+	if(file2 == MAP_FAILED) { perror("mmap"); exit(1); } 
+
+	for(int i=0;i<st.st_size;i++){
+		temp = file2[i];
+	}
+	end = __rdtsc();
+
+	printf("alloc time : %ld\n",end-start);
 
 
-
-	/*while(n--){
-		fputs("This is temp string to alloc file-backed page.\n",output_file);
-	};*/
-	/*while(a--){
-		fgets(arr,50,input_file);
-	}*/
-	//fclose(output_file);
 	while(1);
 
 
