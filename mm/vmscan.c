@@ -2414,22 +2414,20 @@ static void shrink_active_list(unsigned long nr_to_scan,
 				continue;
 			}
 		//}
-
+		/*
+		*----------- For monitoring------------
+		*/
+		if(page_lru(page)==LRU_ACTIVE_FILE){
+			act_to_inact_file++;
+		}
+		else if(page_lru(page)==LRU_ACTIVE_ANON){
+			act_to_inact_anon++;
+		}
 		ClearPageActive(page);	/* we are de-activating */
 		SetPageWorkingset(page);
 		list_add(&page->lru, &l_inactive);
 	}
-	/*
-	*----------- For monitoring------------
-	*/
-	spin_lock_irq(&lruvec->lru_lock);
-	if(lru==LRU_ACTIVE_FILE){
-		act_to_inact_file++;
-	}
-	else if(lru==LRU_ACTIVE_ANON){
-		act_to_inact_anon++;
-	}
-	spin_unlock_irq(&lruvec->lru_lock);
+
 	/*
 	 * Move pages back to the lru list.
 	 */
@@ -3650,7 +3648,6 @@ unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
 
 	trace_mm_vmscan_direct_reclaim_end(nr_reclaimed);
 	set_task_reclaim_state(current, NULL);
-	//num_rec_pages += nr_reclaimed;
 	return nr_reclaimed;
 }
 

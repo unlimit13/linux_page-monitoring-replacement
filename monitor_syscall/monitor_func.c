@@ -17,26 +17,6 @@
 #include <linux/swap.h>
 
 
-/*int num_of_list(struct list_head *src,int *ref_count){
-	int page_count = 0; 
-	int temp_count = 0;
-	struct page *p = NULL;   
-
-	//struct list_head *i, *tmp;
-	//list_for_each_safe(i, tmp, src) {
-	//	page_count++;
-	//}
-	while (!list_empty(src)) {  
-		p = lru_to_page(src); 
-		page_count++;
-		if(PageReferenced(p)){
-			temp_count++;
-		}
-		p = prev_page(p); 
-	}
-	ref_count = &temp_count;
-	return page_count;
-}*/
 
 int do_monitoring(struct list_head *src){
   int reference_cnt=0;
@@ -48,12 +28,6 @@ int do_monitoring(struct list_head *src){
       reference_cnt++;
     }
 	}
-  /*while(!list_empty(src)){
-    if(++page_count >=20) break;
-    p= lru_to_page(src);
-    printk(KERN_CONT "(%lx) ",page_to_pfn(p));
-    p= list_entry(p->lru,struct page, lru);
-  }*/
   return reference_cnt;
 }
 
@@ -110,8 +84,8 @@ SYSCALL_DEFINE0(monitor_syscall)
     printk(KERN_INFO "promotion in FILE : %d\n",inact_to_act_file);
     printk(KERN_INFO "promotion in ANON : %d\n",inact_to_act_anon);
 
-    printk("========== Reclaimed ============\n");
-    printk(KERN_INFO "Reclaim : %d\n",num_rec_pages);
+    printk("========== Eviction ============\n");
+    printk(KERN_INFO "Eviction : %d\n",num_rec_pages);
 
     spin_unlock_irq(&lruvec->lru_lock);
 
