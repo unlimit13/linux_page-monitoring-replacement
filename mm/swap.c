@@ -416,7 +416,7 @@ void mark_page_accessed(struct page *page)
 	} else if (!PageActive(page)) {
 		/*monitoring : activation in file and anon*/
 		//if(page_lru(page) == LRU_INACTIVE_FILE){ //file
-			inact_to_act_file++;
+
 		//}
 		/*else if(page_lru(page)==LRU_INACTIVE_ANON){//anon
 			inact_to_act_anon++;
@@ -428,6 +428,7 @@ void mark_page_accessed(struct page *page)
 		 * LRU on the next drain.
 		 */
 		if (PageLRU(page)){
+			inact_to_act_file++;
 			activate_page(page);
 		}
 		else{

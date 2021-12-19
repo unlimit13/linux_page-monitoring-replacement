@@ -1261,7 +1261,7 @@ static enum page_references page_check_references(struct page *page,
 		 */
 		SetPageReferenced(page);
 
-		if (referenced_page || referenced_ptes > 1)
+		if (page->ref_counter.counter > 5)
 			return PAGEREF_ACTIVATE;
 
 		/*
@@ -2415,7 +2415,7 @@ static void shrink_active_list(unsigned long nr_to_scan,
 			 * IO, plus JVM can create lots of anon VM_EXEC pages,
 			 * so we ignore them here.
 			 */
-			if (page->ref_counter.counter>0 && page_is_file_lru(page)) {
+			if (page->ref_counter.counter>0) {
 				nr_rotated += thp_nr_pages(page);
 				list_add(&page->lru, &l_active);
 				continue;
@@ -2424,7 +2424,7 @@ static void shrink_active_list(unsigned long nr_to_scan,
 		/*
 		*----------- For monitoring------------
 		*/
-		if(file){
+		if(page_is_file_lru(page)){
 			act_to_inact_file++;
 		}
 		else{
