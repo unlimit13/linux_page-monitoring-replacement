@@ -1782,6 +1782,7 @@ activate_locked:
 		VM_BUG_ON_PAGE(PageActive(page), page);
 		if (!PageMlocked(page)) {
 			int type = page_is_file_lru(page);
+
 			SetPageActive(page);
 			stat->nr_activate[type] += nr_pages;
 			count_memcg_page_event(page, PGACTIVATE);
@@ -2417,10 +2418,10 @@ static void shrink_active_list(unsigned long nr_to_scan,
 		/*
 		*----------- For monitoring------------
 		*/
-		if(page_lru(page)==LRU_ACTIVE_FILE){
+		if(file){
 			act_to_inact_file++;
 		}
-		else if(page_lru(page)==LRU_ACTIVE_ANON){
+		else{
 			act_to_inact_anon++;
 		}
 		ClearPageActive(page);	/* we are de-activating */
