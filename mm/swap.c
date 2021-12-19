@@ -415,12 +415,12 @@ void mark_page_accessed(struct page *page)
 		 */
 	} else if (!PageActive(page)) {
 		/*monitoring : activation in file and anon*/
-		if(page_lru(page) == LRU_INACTIVE_FILE){ //file
+		//if(page_lru(page) == LRU_INACTIVE_FILE){ //file
 			inact_to_act_file++;
-		}
-		else if(page_lru(page)==LRU_INACTIVE_ANON){//anon
+		//}
+		/*else if(page_lru(page)==LRU_INACTIVE_ANON){//anon
 			inact_to_act_anon++;
-		}
+		}*/
 		/*
 		 * If the page is on the LRU, queue it for activation via
 		 * lru_pvecs.activate_page. Otherwise, assume the page is on a

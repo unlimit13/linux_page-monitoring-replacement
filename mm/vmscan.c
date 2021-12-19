@@ -1784,6 +1784,12 @@ activate_locked:
 			int type = page_is_file_lru(page);
 
 			SetPageActive(page);
+			if(type==1){
+				inact_to_act_file++;
+			}
+			else{
+				inact_to_act_anon++;
+			}
 			stat->nr_activate[type] += nr_pages;
 			count_memcg_page_event(page, PGACTIVATE);
 		}
